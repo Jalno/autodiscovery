@@ -5,5 +5,8 @@
         "psr-4": {
             "Jalno\\AutoDiscovery\\": "src"
         }
+    },
+    "require": {
+        "jalno/lumen": "0.0.1"
     }
 }
