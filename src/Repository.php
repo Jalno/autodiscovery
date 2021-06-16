@@ -1,31 +1,32 @@
 <?php
 namespace Jalno\AutoDiscovery;
 
-use Jalno\Lumen\Contracts\{IAutoDiscover, IPackage};
+use Laravel\Lumen\Application;
+use Jalno\Lumen\Contracts\IAutoDiscover;
 
 class Repository implements IAutoDiscover
 {
-    protected IPackage $package;
+    protected Application $app;
 
-    public function __construct(IPackage $package)
+    public function __construct(Application $app)
     {
-        $this->package = $package;
+        $this->app = $app;
     }
 
     public function register(): void
     {
-        if (!is_dir($this->package->path("..", "vendor"))) {
+        if (!is_dir($this->app->basePath("vendor"))) {
             return;
         }
-        foreach (scandir($this->package->path("..", "vendor")) as $namespace) {
-            if (in_array($namespace, ['.', '..']) or !is_dir($this->package->path("..", "vendor", $namespace))) {
+        foreach (scandir($this->app->basePath("vendor")) as $namespace) {
+            if (in_array($namespace, ['.', '..']) or !is_dir($this->app->basePath("vendor/" . $namespace))) {
                 continue;
             }
-            foreach (scandir($this->package->path("..", "vendor", $namespace)) as $packageName) {
+            foreach (scandir($this->app->basePath("vendor/" . $namespace)) as $packageName) {
                 if (in_array($namespace, ['.', '..'])) {
                     continue;
                 }
-                $composer = $this->getComposerFrom($this->package->path("..", "vendor", $namespace, $packageName, "composer.json"));
+                $composer = $this->getComposerFrom($this->app->basePath("vendor/" . $namespace . "/" . $packageName . "/composer.json"));
                 if (empty($composer)) {
                     continue;
                 }
