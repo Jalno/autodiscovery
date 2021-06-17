@@ -2,9 +2,9 @@
 namespace Jalno\AutoDiscovery;
 
 use Laravel\Lumen\Application;
-use Jalno\Lumen\Contracts\IAutoDiscover;
+use Jalno\Lumen\Contracts\IAutoDiscovery;
 
-class Repository implements IAutoDiscover
+class Repository implements IAutoDiscovery
 {
     protected Application $app;
 
