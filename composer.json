@@ -7,6 +7,8 @@
         }
     },
     "require": {
-        "jalno/lumen": "dev-master"
-    }
+        "jalno/lumen": "^0.0.1"
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev"
 }
