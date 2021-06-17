@@ -7,6 +7,6 @@
         }
     },
     "require": {
-        "jalno/lumen": "0.0.1"
+        "jalno/lumen": "dev-master"
     }
 }
