@@ -19,7 +19,7 @@ class AutoDiscoveryProvider extends ServiceProvider implements DeferrableProvide
     }
 
     /**
-	 * @return class-string[]
+	 * @return string[]
 	 */
     public function provides()
     {
