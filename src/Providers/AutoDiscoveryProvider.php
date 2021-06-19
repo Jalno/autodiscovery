@@ -18,6 +18,9 @@ class AutoDiscoveryProvider extends ServiceProvider implements DeferrableProvide
         $this->app->singleton(Contracts\IAutoDiscovery::class, Repository::class);
     }
 
+    /**
+	 * @return class-string[]
+	 */
     public function provides()
     {
         return [Contracts\IAutoDiscovery::class];
