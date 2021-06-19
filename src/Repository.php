@@ -28,14 +28,18 @@ class Repository implements Contracts\IAutoDiscovery
         if (!is_dir($this->app->basePath("vendor"))) {
             return;
         }
-        /** @var string[] $namespaceDirectories */
         $namespaceDirectories = scandir($this->app->basePath("vendor"));
+        if ($namespaceDirectories === false) {
+            throw new \RuntimeException("can not scandir directory: '" . $this->app->basePath("vendor") . "'");
+        }
         foreach ($namespaceDirectories as $namespace) {
             if (in_array($namespace, ['.', '..']) or !is_dir($this->app->basePath("vendor/" . $namespace))) {
                 continue;
             }
-            /** @var string[] $directories */
             $directories = scandir($this->app->basePath("vendor/" . $namespace));
+            if ($directories === false) {
+                throw new \RuntimeException("can not scandir directory: '" . $this->app->basePath("vendor/" . $namespace) . "'");
+            }
             foreach ($directories as $packageName) {
                 if (in_array($namespace, ['.', '..'])) {
                     continue;
