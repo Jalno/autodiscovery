@@ -41,7 +41,6 @@ class Repository implements Contracts\IAutoDiscovery
                 if (in_array($namespace, ['.', '..'])) {
                     continue;
                 }
-                /** @var ComposerFile $composer */
                 $composer = $this->getComposerFrom($this->app->basePath("vendor/" . $namespace . "/" . $packageName . "/composer.json"));
                 if (empty($composer)) {
                     continue;
@@ -55,7 +54,7 @@ class Repository implements Contracts\IAutoDiscovery
     }
 
     /**
-     * @return ComposerFile|array<null>
+     * @return ComposerFile|array{}
      */
     private function getComposerFrom(string $path): array
     {
