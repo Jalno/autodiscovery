@@ -2,22 +2,29 @@
 namespace Jalno\AutoDiscovery;
 
 use Laravel\Lumen\Application;
-use Jalno\Lumen\Contracts;
+use Jalno\Lumen\Contracts\{IAutoDiscovery, IPackages, IPackage};
 
 /**
  * @phpstan-type ComposerFile array{
+ *  "name": string,
+ *  "version": string,
+ *  "description"?: string,
  *  "extra"?: array{
- *      "jalno"?: array<string, class-string<Contracts\IPackage>|class-string<Contracts\IPackage>[]>
+ *      "jalno"?: array{
+ *          "package"?: class-string<IPackage>|array<class-string<IPackage>>
+ *      }
  *  }
  * }
  */
-class Repository implements Contracts\IAutoDiscovery
+class Repository implements IAutoDiscovery
 {
     protected Application $app;
+    protected IPackages $packages;
 
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->packages = $app->make(IPackages::class);
     }
 
     public function register(): void
@@ -47,7 +54,7 @@ class Repository implements Contracts\IAutoDiscovery
                 }
                 $packages = $this->findJalnoPackageFrom($composer);
                 foreach ($packages as $package) {
-                    packages()->register($package);
+                    $this->packages->register($package);
                 }
             }
         }
@@ -56,7 +63,7 @@ class Repository implements Contracts\IAutoDiscovery
     /**
      * @return ComposerFile|array{}
      */
-    private function getComposerFrom(string $path): array
+    protected function getComposerFrom(string $path): array
     {
         if (is_file($path)) {
             $content = file_get_contents($path);
@@ -70,15 +77,17 @@ class Repository implements Contracts\IAutoDiscovery
 
     /**
      * @param ComposerFile $composer
-     * @return class-string<Contracts\IPackage>[]
+     * @return class-string<IPackage>[]
      */
-    private function findJalnoPackageFrom(array $composer): array
+    protected function findJalnoPackageFrom(array $composer): array
     {
-        $jalnoExtra = $composer["extra"]["jalno"] ?? null;
-        if (!isset($jalnoExtra["package"]) or empty($jalnoExtra["package"])) {
+        if (
+            !isset($composer["extra"]["jalno"]) or
+            !isset($composer["extra"]["jalno"]["package"]) or
+            empty($composer["extra"]["jalno"]["package"])
+        ) {
             return [];
         }
-
-        return is_array($jalnoExtra["package"]) ? $jalnoExtra["package"] : [$jalnoExtra["package"]];
+        return (array)$composer["extra"]["jalno"]["package"];
     }
 }
