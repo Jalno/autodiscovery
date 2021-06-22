@@ -1,5 +1,6 @@
 {
     "name": "jalno/autodiscovery",
+    "version": "1.0.1",
     "description": "Jalno AutoDiscovery",
     "autoload": {
         "psr-4": {
