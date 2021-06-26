@@ -1,28 +1,18 @@
 <?php
 namespace Jalno\AutoDiscovery\Providers;
 
-use Jalno\Lumen\Contracts;
-use Jalno\AutoDiscovery\Repository;
+use Jalno\AutoDiscovery\{AutoDiscovery, PackageManifest};
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Support\DeferrableProvider;
 
-class AutoDiscoveryProvider extends ServiceProvider implements DeferrableProvider
+class AutoDiscoveryProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
-        $this->app->singleton(Contracts\IAutoDiscovery::class, Repository::class);
-    }
-
-    /**
-	 * @return string[]
-	 */
-    public function provides()
-    {
-        return [Contracts\IAutoDiscovery::class];
+        $this->app->instance("path.cache", $this->app->storagePath("cache"));
+        $this->app->singleton(PackageManifest::class, function ($app) {
+            return new PackageManifest($app->make("files"), $app->basePath(), $app->make("path.cache"));
+        });
+        $this->app->singleton(AutoDiscovery::class);
+        $this->app->make(AutoDiscovery::class)->boot();
     }
 }
