@@ -1,6 +1,5 @@
 {
     "name": "jalno/autodiscovery",
-    "version": "1.0.1",
     "description": "Jalno AutoDiscovery",
     "autoload": {
         "psr-4": {
@@ -8,7 +7,9 @@
         }
     },
     "require": {
-        "jalno/lumen": "^1.0.0"
+       "illuminate/contracts": "^8.0",
+       "illuminate/filesystem": "^8.0",
+       "illuminate/support": "^8.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^0.12.83"
